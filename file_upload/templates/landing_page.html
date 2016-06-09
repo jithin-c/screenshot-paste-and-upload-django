@@ -29,25 +29,32 @@
 
 <body>
 
-<div class="col-sm-12">
-    <div class="row">
-        <div class="col-sm-4" id="screenshots_list">
-            <div id="id_screenshot_div" class="screenshot_div text-center" contenteditable="true">Click here & Paste to upload screenshot</div>
-        </div>
-    </div>
+<div class="col-sm-12" style="margin-top:30px;">
 
+<div class="panel panel-primary"">
+    <div class="panel-heading"><strong>Paste & Upload Screenshots</strong></div>
 
-    <div class="row" style="margin-top:20px;">
-        <div class="col-sm-4" id="screenshots_list">
-            {% for file in screenshots %}
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb" style="width:120px;height:100px;padding:5px;">
-                <a data-toggle="tooltip" data-placement="bottom" title="{{file.get_name}}" class="thumbnail" target="_blank" href="{{MEDIA_URL}}{{file.attachment}}" >
-                    <img class="img-responsive" src="{{MEDIA_URL}}{{file.attachment}}" alt="Short alt text" style="width:100px;height:100px">
-                </a>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-4 text-center" >
+                <div id="id_screenshot_div" class="screenshot_div text-center" contenteditable="true">Click here & Paste to upload screenshot</div>
             </div>
-            {% endfor %}
+        </div>
+
+        <div class="row" style="margin-top:20px;padding-top:10px;padding-bottom:10px;">
+            <div class="col-lg-12" id="screenshots_list">
+                {% for file in screenshots %}
+                <div class="col-lg-3 col-md-4 thumb" style="width:120px;height:100px;padding:5px;">
+                    <a data-toggle="tooltip" data-placement="bottom" title="{{file.get_name}}" class="thumbnail" target="_blank" href="{{MEDIA_URL}}{{file.attachment}}" >
+                        <img class="img-responsive" src="{{MEDIA_URL}}{{file.attachment}}" alt="Short alt text" style="width:100px;height:100px">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
+</div>
+
 </div>
 
 <script>
