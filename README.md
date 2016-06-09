@@ -13,3 +13,6 @@ Works only on Google Chrome and Mozilla FireFox.
 1. Django 1.7
 2. Bootstrap 3
 3. Jquery
+
+###License
+This project is licensed under the MIT License.
