@@ -7,7 +7,7 @@ Sample Application that uploads the screenshot copied in the clipboard to the se
 copy screenshot to clipboard using Ctrl-V in Windows or Cmd-Ctrl-Shift-3 in Mac OS X and paste in the 'Paste Screenshots' Div
 
 ####Support:
-Works only on Chrome and Mozilla FireFox.
+Works only on Google Chrome and Mozilla FireFox.
 
 ####Requires:
 1. Django 1.7
