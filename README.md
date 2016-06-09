@@ -2,6 +2,8 @@
 
 Sample Application that uploads the screenshot copied in the clipboard to the server.
 
+![alt tag](https://github.com/jithin-c/screenshot-paste-and-upload-django/blob/master/files/media/preview.png)
+
 
 ####How to ?
 copy screenshot to clipboard using Ctrl-V in Windows or Cmd-Ctrl-Shift-3 in Mac OS X and paste in the 'Paste Screenshots' Div
