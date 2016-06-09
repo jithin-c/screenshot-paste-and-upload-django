@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Screenshot Paste & Upload</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+<!-- Latest compiled and minified JavaScript -->
+<script   src="https://code.jquery.com/jquery-1.12.4.min.js"   integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="   crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<style>
+.screenshot_div
+{
+    width: 200px;
+    height: 79px;
+    overflow:auto;
+    border: 2px dotted #B3B3B3;
+    font-size:14px;
+    padding:3px;
+    color:#B3B3B3;
+    font-weight:bold;
+    margin-top:20px;
+}
+</style>
+</style>
+</head>
+
+<body>
+
+<div class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-4" id="screenshots_list">
+            <div id="id_screenshot_div" class="screenshot_div text-center" contenteditable="true">Click here & Paste to upload screenshot</div>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:20px;">
+        <div class="col-sm-4" id="screenshots_list">
+            {% for file in screenshots %}
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" style="width:120px;height:100px;padding:5px;">
+                <a data-toggle="tooltip" data-placement="bottom" title="{{file.get_name}}" class="thumbnail" target="_blank" href="{{MEDIA_URL}}{{file.attachment}}" >
+                    <img class="img-responsive" src="{{MEDIA_URL}}{{file.attachment}}" alt="Short alt text" style="width:100px;height:100px">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+ $(function() {
+    $("#id_screenshot_div").bind("paste", function(ev) {
+        var isChrome = !!window.chrome && !!window.chrome.webstore;
+        var isFirefox = typeof InstallTrigger !== 'undefined';
+
+        if( isChrome )
+        {
+            var $this = $(this);
+            var original =  ev.originalEvent;
+            var file =  original.clipboardData.items[0].getAsFile();
+            var reader = new FileReader();
+
+            reader.onload = function (evt) {
+                var result = evt.target.result;
+                var result = evt.target.result;
+                var arr = result.split(",");
+                var data = arr[1]; // raw base64
+                var contentType = arr[0].split(";")[0].split(":")[1];
+
+                // this needs to post to a server route that can accept raw base64 content and save to a file
+                $.post("{% url 'upload_screenshot' %}", {
+                    contentType: contentType,
+                    data: data,
+                    csrfmiddlewaretoken: '{{csrf_token}}',
+                },
+                function(data) {
+                    if(data['status']=='success')
+                    {
+                        alert('Screenshot uploaded.');
+                        $('#screenshots_list').append('<div class="col-lg-3 col-md-4 col-xs-6 thumb" style="width:120px;height:100px;padding:5px;"> \
+                            <a data-toggle="tooltip" data-placement="bottom" title="'+ data['fileName'] +'" class="thumbnail" target="_blank" href="'+ data['url'] +'" > \
+                                <img class="img-responsive" src="'+ data['url'] +'" alt="Short alt text" style="width:100px;height:100px"> \
+                            </a> \
+                            </div>');
+                    }
+                    else
+                        alert("Unknown upload error");
+                })
+                .fail(function() {
+                    alert( "Unknown upload error" );
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }
+        else if( isFirefox )
+        {
+            setTimeout(function()
+            {
+                var blob = $('#id_screenshot_div img').attr('src');
+                if(blob==undefined)
+                {
+                    alert("Please paste an image instead of text.");
+                    $('#id_screenshot_div').html('Click here & Paste to upload screenshot');
+                    return;
+                }
+                $.post("{% url 'upload_screenshot' %}", {
+                    data: blob,
+                    csrfmiddlewaretoken: '{{csrf_token}}',
+                },
+                function(data) {
+                    if(data['status']=='success')
+                    {
+                        alert('Screenshot uploaded.');
+                        $('#screenshots_list').append('<div class="col-lg-3 col-md-4 col-xs-6 thumb" style="width:120px;height:100px;padding:5px;"> \
+                            <a data-toggle="tooltip" data-placement="bottom" title="'+ data['fileName'] +'" class="thumbnail" target="_blank" href="'+ data['url'] +'" > \
+                                <img class="img-responsive" src="'+ data['url'] +'" alt="Short alt text" style="width:100px;height:100px"> \
+                            </a> \
+                            </div>');
+                    }
+                    else
+                        alert("Unknown upload error");
+                })
+                .fail(function() {
+                    alert( "Unknown upload error" );
+                });
+                $('#id_screenshot_div').html('Click here & Paste to upload screenshot');
+
+            }, 200);
+        }
+        else
+        {
+            alert('Feature not supported on this browser');
+            $('#id_screenshot_div').html('Click here & Paste to upload screenshot');
+            ev.preventDefault();
+        }
+
+    });
+});
+</script>
+</div>
+
+</body>
+</html>
